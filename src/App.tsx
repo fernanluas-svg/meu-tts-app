@@ -184,7 +184,7 @@ export default function App() {
                       ) : (
                         <Play size={10} />
                       )}
-                      {previewingVoiceId === voice.id ? 'REPRODUZINDO' : 'TESTAR VOZ'}
+                      {previewingVoiceId === voice.id ? 'REPRODUZINDO' : 'ÁUDIO'}
                     </button>
                   </div>
                 </div>
