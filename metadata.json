@@ -1,0 +1,6 @@
+{
+  "name": "VoxGemini - AI Text-to-Speech",
+  "description": "A professional-grade Text-to-Speech application powered by Gemini 3.1 Flash, featuring custom voices, pitch control, and high-fidelity audio generation.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}
