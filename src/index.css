@@ -148,6 +148,16 @@ body {
   .btn-premium:active:not(:disabled) {
     transform: scale(0.99);
   }
+
+  [data-theme="light"] .btn-premium {
+    border-color: #7c3aed;
+    box-shadow: 0 8px 20px rgba(124, 58, 237, 0.35) !important;
+  }
+
+  [data-theme="light"] .btn-premium:hover:not(:disabled) {
+    border-color: #6d28d9;
+    box-shadow: 0 10px 26px rgba(124, 58, 237, 0.5) !important;
+  }
 }
 
 /* Force explicit color overrides for the light theme to beat high-specificity rules */
