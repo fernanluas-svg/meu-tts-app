@@ -283,7 +283,7 @@ export default function App() {
                 value={text}
                 onChange={(e) => setText(e.target.value)}
                 disabled={isProcessing}
-                className="flex-1 min-h-[340px] bg-transparent border-none outline-none resize-none text-lg md:text-2xl leading-loose text-app-soft placeholder:text-placeholder font-light custom-scrollbar"
+                className="tts-textarea flex-1 min-h-[340px] outline-none resize-none text-lg md:text-2xl leading-loose text-app-soft font-light custom-scrollbar"
                 placeholder="Insira um texto longo. O sistema irá dividi-lo e processá-lo automaticamente em blocos otimizados..."
               />
               
@@ -303,7 +303,7 @@ export default function App() {
                   className={`flex-1 h-16 rounded-2xl font-bold text-lg transition-all flex items-center justify-center gap-3 relative overflow-hidden group/btn ${
                     isProcessing || !text.trim()
                       ? 'bg-surface text-faint cursor-not-allowed border border-line-soft'
-                      : 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white border border-violet-300/70 hover:brightness-110 shadow-lg shadow-violet-900/40 active:scale-[0.99]'
+                      : 'btn-premium cursor-pointer'
                   }`}
                 >
                   {isProcessing ? (

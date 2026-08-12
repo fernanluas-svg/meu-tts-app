@@ -110,6 +110,44 @@ body {
     cursor: pointer;
     box-shadow: 0 0 10px rgba(124, 58, 237, 0.5);
   }
+
+  .tts-textarea {
+    background-color: rgba(255, 255, 255, 0.03) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 16px !important;
+    padding: 16px !important;
+    text-align: left !important;
+    text-decoration: none !important;
+  }
+
+  .tts-textarea::placeholder {
+    color: #64748b !important;
+    opacity: 1;
+  }
+
+  [data-theme="light"] .tts-textarea {
+    background-color: rgba(0, 0, 0, 0.03) !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  }
+
+  .btn-premium {
+    border-radius: 12px !important;
+    padding: 14px 24px !important;
+    cursor: pointer;
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%);
+    box-shadow: 0 8px 20px rgba(79, 70, 229, 0.35) !important;
+  }
+
+  .btn-premium:hover:not(:disabled) {
+    filter: brightness(1.15);
+    box-shadow: 0 10px 26px rgba(79, 70, 229, 0.5) !important;
+  }
+
+  .btn-premium:active:not(:disabled) {
+    transform: scale(0.99);
+  }
 }
 
 /* Force explicit color overrides for the light theme to beat high-specificity rules */
