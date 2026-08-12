@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
-import { generateSpeech, TTSOptions } from '../services/geminiService';
+import { generateSpeech, fetchVoicePreview, TTSOptions } from '../services/ttsService';
 import { TtsSegment, saveSegment, getSegments, clearSegments, cacheAudio, getCachedAudio } from '../lib/db';
 import { splitTextIntoChunks, combineWavBlobs } from '../lib/audioUtils';
 
@@ -66,12 +66,7 @@ export function useTTSQueue() {
       let audioBlob = await getCachedAudio(cacheKey);
 
       if (!audioBlob) {
-        const buffer = await generateSpeech({ 
-          voiceId, 
-          text: previewText, 
-          speed: 1.0, 
-          pitch: 0 
-        });
+        const buffer = await fetchVoicePreview(voiceId);
         audioBlob = new Blob([buffer], { type: 'audio/wav' });
         await cacheAudio(cacheKey, audioBlob);
       }
@@ -152,7 +147,7 @@ export function useTTSQueue() {
           addLog(`Erro no segmento ${i + 1} (Tentativa ${errorCount}/${MAX_RETRIES}): ${err instanceof Error ? err.message : 'Erro desconhecido'}`);
           
           if (errorCount >= MAX_RETRIES) {
-             setState(prev => ({ ...prev, isProcessing: false, error: "Falha após múltiplas tentativas. Verifique sua conexão ou limite da API." }));
+             setState(prev => ({ ...prev, isProcessing: false, error: "Falha após múltiplas tentativas. Verifique se o servidor XTTS local está rodando em http://127.0.0.1:8000." }));
              return;
           }
           

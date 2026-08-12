@@ -45,52 +45,104 @@ export function splitTextIntoChunks(text: string, maxChunkLength: number = 800):
   return chunks;
 }
 
+interface WavDataInfo {
+  sampleRate: number;
+  channels: number;
+  bitsPerSample: number;
+  dataOffset: number;
+  dataLength: number;
+}
+
+function getWavDataInfo(buffer: ArrayBuffer): WavDataInfo | null {
+  const u8 = new Uint8Array(buffer);
+  const view = new DataView(buffer);
+
+  if (buffer.byteLength < 12) return null;
+  const riff = String.fromCharCode(u8[0], u8[1], u8[2], u8[3]);
+  const wave = String.fromCharCode(u8[8], u8[9], u8[10], u8[11]);
+  if (riff !== 'RIFF' || wave !== 'WAVE') return null;
+
+  let offset = 12;
+  let sampleRate = 0;
+  let channels = 0;
+  let bitsPerSample = 0;
+  let dataOffset = -1;
+  let dataLength = 0;
+
+  while (offset + 8 <= buffer.byteLength) {
+    const chunkId = String.fromCharCode(u8[offset], u8[offset + 1], u8[offset + 2], u8[offset + 3]);
+    const chunkSize = view.getUint32(offset + 4, true);
+
+    if (chunkId === 'fmt ') {
+      channels = view.getUint16(offset + 10, true);
+      sampleRate = view.getUint32(offset + 12, true);
+      bitsPerSample = view.getUint16(offset + 22, true);
+    } else if (chunkId === 'data') {
+      dataOffset = offset + 8;
+      dataLength = Math.min(chunkSize, buffer.byteLength - dataOffset);
+      break;
+    }
+
+    offset += 8 + chunkSize + (chunkSize % 2);
+  }
+
+  if (dataOffset < 0) return null;
+
+  return { sampleRate, channels, bitsPerSample, dataOffset, dataLength };
+}
+
 export async function combineWavBlobs(blobs: Blob[]): Promise<Blob> {
   if (blobs.length === 0) return new Blob();
   if (blobs.length === 1) return blobs[0];
 
-  // We assume all blobs are WAV files with identical parameters (header 44 bytes)
-  // We take the header from the first one and adjust the size fields.
-  // Then append only the data sections (after byte 44) of all blobs.
-  
-  return new Promise<Blob>((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      const firstArrayBuffer = reader.result as ArrayBuffer;
-      const header = new DataView(firstArrayBuffer.slice(0, 44));
-      
-      let totalDataLength = 0;
-      const dataSegments: Uint8Array[] = [];
+  const buffers = await Promise.all(blobs.map(b => b.arrayBuffer()));
+  const infos = buffers.map(getWavDataInfo);
+  const valid = infos.filter((i): i is WavDataInfo => i !== null);
 
-      const processBlobs = async () => {
-        for (let i = 0; i < blobs.length; i++) {
-          const buffer = await blobs[i].arrayBuffer();
-          const dataPart = new Uint8Array(buffer.slice(44));
-          totalDataLength += dataPart.length;
-          dataSegments.push(dataPart);
-        }
+  if (valid.length === 0) {
+    throw new Error("Nenhum dos áudios gerados é um WAV válido.");
+  }
 
-        // Update header size fields
-        // 4 (RIFF) + 4 (Size) + 4 (WAVE) + ...
-        // Bytes 4-7: Total file size - 8
-        header.setUint32(4, 36 + totalDataLength, true);
-        // Bytes 40-43: Data chunk size
-        header.setUint32(40, totalDataLength, true);
+  const first = valid[0];
+  let totalDataLength = 0;
+  for (const info of valid) {
+    totalDataLength += info.dataLength;
+  }
 
-        const result = new Uint8Array(44 + totalDataLength);
-        result.set(new Uint8Array(header.buffer), 0);
-        let offset = 44;
-        for (const segment of dataSegments) {
-          result.set(segment, offset);
-          offset += segment.length;
-        }
+  const header = new ArrayBuffer(44);
+  const view = new DataView(header);
 
-        resolve(new Blob([result], { type: 'audio/wav' }));
-      };
+  function writeString(offset: number, str: string) {
+    for (let i = 0; i < str.length; i++) {
+      view.setUint8(offset + i, str.charCodeAt(i));
+    }
+  }
 
-      processBlobs().catch(reject);
-    };
-    reader.onerror = reject;
-    reader.readAsArrayBuffer(blobs[0]);
-  });
+  writeString(0, 'RIFF');
+  view.setUint32(4, 36 + totalDataLength, true);
+  writeString(8, 'WAVE');
+  writeString(12, 'fmt ');
+  view.setUint32(16, 16, true);
+  view.setUint16(20, 1, true); // PCM
+  view.setUint16(22, first.channels || 1, true);
+  view.setUint32(24, first.sampleRate || 22050, true);
+  view.setUint32(28, (first.sampleRate || 22050) * (first.channels || 1) * 2, true);
+  view.setUint16(32, (first.channels || 1) * 2, true);
+  view.setUint16(34, first.bitsPerSample || 16, true);
+  writeString(36, 'data');
+  view.setUint32(40, totalDataLength, true);
+
+  const result = new Uint8Array(44 + totalDataLength);
+  result.set(new Uint8Array(header), 0);
+
+  let offset = 44;
+  for (let i = 0; i < buffers.length; i++) {
+    const info = infos[i];
+    if (!info) continue;
+    const data = new Uint8Array(buffers[i], info.dataOffset, info.dataLength);
+    result.set(data, offset);
+    offset += info.dataLength;
+  }
+
+  return new Blob([result], { type: 'audio/wav' });
 }

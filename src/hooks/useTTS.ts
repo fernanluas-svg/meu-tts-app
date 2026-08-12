@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback } from 'react';
-import { generateSpeech, TTSOptions } from '../services/geminiService';
+import { generateSpeech, TTSOptions } from '../services/ttsService';
 
 export function useTTS() {
   const [isGenerating, setIsGenerating] = useState(false);
