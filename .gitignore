@@ -22,3 +22,4 @@ backend/teste_direto.wav
 backend/teste_servidor.wav
 backend/teste_xtts/output.wav
 backend/teste_xtts/saida_*.wav
+backend/teste_xtts/vozes/output.wav
