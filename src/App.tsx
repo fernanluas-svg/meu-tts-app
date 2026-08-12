@@ -302,7 +302,7 @@ export default function App() {
                   disabled={isProcessing || !text.trim()}
                   className={`flex-1 h-16 rounded-2xl font-bold text-lg transition-all flex items-center justify-center gap-3 relative overflow-hidden group/btn ${
                     isProcessing || !text.trim()
-                      ? 'bg-surface text-faint cursor-not-allowed border border-line-soft'
+                      ? 'btn-generate-disabled'
                       : 'btn-premium cursor-pointer'
                   }`}
                 >
