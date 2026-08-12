@@ -39,11 +39,12 @@
 }
 
 [data-theme="light"] {
-  --t-text: #000000;
-  --t-text2: #000000;
-  --t-muted: #000000;
-  --t-faint: #000000;
-  --t-placeholder: rgba(15, 23, 42, 0.45);
+  /* Updated to stronger dark text tones to avoid specificity overrides */
+  --t-text: #0f172a; /* strong black-blue */
+  --t-text2: #334155; /* secondary/darker-gray */
+  --t-muted: #334155;
+  --t-faint: #334155;
+  --t-placeholder: #64748b; /* textarea placeholder fallback */
   --t-surface: #ffffff;
   --t-surface-strong: #f1f5f9;
   --t-panel: #f1f5f9;
@@ -109,4 +110,48 @@ body {
     cursor: pointer;
     box-shadow: 0 0 10px rgba(124, 58, 237, 0.5);
   }
+}
+
+/* Force explicit color overrides for the light theme to beat high-specificity rules */
+/* General text, titles and labels */
+[data-theme="light"] :where(body, p, h1, h2, h3, h4, h5, h6, label, span, a, li, button, input, textarea, strong, b) {
+  color: #0f172a !important;
+}
+
+/* Secondary texts, descriptions and captions */
+[data-theme="light"] :where(.text-muted, .text-faint, .text-app-soft, .description, .voice-desc, .caption) {
+  color: #334155 !important;
+}
+
+/* Textarea placeholder specifically */
+[data-theme="light"] textarea::placeholder {
+  color: #64748b !important;
+}
+
+/* Cards, voice cards and textarea backgrounds/borders */
+[data-theme="light"] .glass-card,
+[data-theme="light"] .voice-card,
+[data-theme="light"] textarea {
+  background-color: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  box-shadow: var(--t-card-shadow) !important;
+}
+
+/* Ensure textarea text color is dark in light theme */
+[data-theme="light"] textarea {
+  color: #0f172a !important;
+}
+
+/* Emphasized primary action button in light theme: saturated violet/indigo gradient with white text */
+[data-theme="light"] .group\/btn,
+[data-theme="light"] button.group\/btn,
+[data-theme="light"] .group\\/btn {
+  background: linear-gradient(90deg, #7c3aed 0%, #4f46e5 100%) !important;
+  color: #ffffff !important;
+  border-color: rgba(124, 58, 237, 0.7) !important;
+}
+
+/* Fallback for any element using placeholder utility classes */
+[data-theme="light"] .placeholder\:text-placeholder {
+  color: #64748b !important;
 }
