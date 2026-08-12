@@ -124,7 +124,7 @@ export default function App() {
         
         {/* Sidebar: Voice Selection & Settings */}
         <aside className="w-80 flex flex-col gap-6 h-full shrink-0">
-          <div className="glass-card p-6 flex flex-col h-full overflow-hidden">
+          <div className="glass-card p-6 flex flex-col h-full overflow-hidden min-h-0">
             <header className="flex items-center gap-3 mb-8">
               <motion.div 
                 animate={isProcessing ? { rotate: 360 } : {}}
@@ -164,14 +164,14 @@ export default function App() {
               </div>
             </div>
 
-            <div className="space-y-3 overflow-y-auto pr-2 flex-grow custom-scrollbar">
+            <div className="space-y-3 overflow-y-auto pr-2 flex-grow min-h-0 custom-scrollbar">
               {VOICES.map((voice) => (
                 <div
                   key={voice.id}
                   className={`w-full text-left p-4 rounded-2xl border transition-all relative group flex flex-col gap-2 ${
                     selectedVoiceId === voice.id 
                       ? 'voice-card-active' 
-                      : 'bg-surface hover:bg-surface-strong border-line-soft opacity-60 grayscale-[0.5] hover:grayscale-0'
+                      : 'bg-surface shadow-[var(--t-card-shadow)] hover:bg-surface-strong border-line-soft opacity-60 grayscale-[0.5] hover:grayscale-0'
                   } ${isProcessing ? 'opacity-20' : ''}`}
                 >
                   <div 
@@ -197,10 +197,10 @@ export default function App() {
                         handlePreviewStatus(voice.id);
                       }}
                       disabled={isProcessing || (isPreviewing && previewingVoiceId !== voice.id)}
-                      className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-[9px] font-bold tracking-wider transition-all ${
+                      className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-[9px] font-bold tracking-wider border transition-all ${
                         previewingVoiceId === voice.id
-                          ? 'bg-violet-500 text-white shadow-lg shadow-violet-500/20'
-                          : 'bg-surface text-muted hover:text-app hover:bg-surface-strong'
+                          ? 'bg-violet-500 border-violet-400 text-white shadow-lg shadow-violet-500/20'
+                          : 'bg-surface border-line text-muted hover:text-app hover:bg-surface-strong'
                       } disabled:opacity-30 disabled:cursor-not-allowed`}
                     >
                       {previewingVoiceId === voice.id && isPreviewing ? (
@@ -217,7 +217,7 @@ export default function App() {
               ))}
             </div>
 
-            <div className="mt-8 space-y-6 pt-6 border-t border-line-soft">
+            <div className="mt-8 space-y-6 pt-6 border-t border-line-soft shrink-0">
               <div className="space-y-4">
                 <div className="flex justify-between mb-1">
                   <label className="text-[10px] text-faint uppercase tracking-widest font-bold">Velocidade</label>
@@ -273,7 +273,7 @@ export default function App() {
                     <Trash2 size={12} />
                     Limpar
                   </button>
-                  <span className="text-xs px-2 py-1 bg-surface rounded text-faint font-mono">
+                  <span className="text-xs px-2 py-1 bg-surface-strong rounded text-faint font-mono">
                     {text.length.toLocaleString()} CARACTERES
                   </span>
                 </div>
@@ -291,7 +291,7 @@ export default function App() {
                 {segments.length > 0 && !isProcessing && (
                   <button 
                     onClick={resetAll}
-                    className="h-16 px-8 rounded-2xl bg-surface text-muted hover:text-app transition-all flex items-center justify-center gap-3 border border-line-soft"
+                    className="h-16 px-8 rounded-2xl bg-surface text-muted hover:text-app hover:bg-surface-strong transition-all flex items-center justify-center gap-3 border border-line"
                   >
                     <RotateCcw size={20} />
                     RESET
@@ -303,7 +303,7 @@ export default function App() {
                   className={`flex-1 h-16 rounded-2xl font-bold text-lg transition-all flex items-center justify-center gap-3 relative overflow-hidden group/btn ${
                     isProcessing || !text.trim()
                       ? 'bg-surface text-faint cursor-not-allowed border border-line-soft'
-                      : 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white hover:brightness-110 shadow-lg shadow-violet-900/40 active:scale-[0.99]'
+                      : 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white border border-violet-300/70 hover:brightness-110 shadow-lg shadow-violet-900/40 active:scale-[0.99]'
                   }`}
                 >
                   {isProcessing ? (
@@ -331,7 +331,7 @@ export default function App() {
                 exit={{ opacity: 0, y: 50, height: 0 }}
                 className="glass-card overflow-hidden flex flex-col shrink-0"
               >
-                <div className="p-4 border-b border-line-soft bg-surface flex items-center justify-between sticky top-0 z-10">
+                <div className="p-4 border-b border-line-soft bg-panel flex items-center justify-between sticky top-0 z-10">
                   <div className="flex items-center gap-4">
                     <div className="flex flex-col">
                       <div className="flex items-center gap-2">
@@ -429,7 +429,7 @@ export default function App() {
 
                     {/* Simple Real-time Logs */}
                     <div className="border-l border-line-soft bg-panel flex flex-col">
-                      <div className="p-2 border-b border-line-soft bg-surface flex items-center gap-2 text-[9px] font-bold text-faint uppercase">
+                      <div className="p-2 border-b border-line-soft bg-panel flex items-center gap-2 text-[9px] font-bold text-faint uppercase">
                         <Database size={10} />
                         Sync Logs
                       </div>
