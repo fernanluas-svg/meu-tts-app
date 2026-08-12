@@ -6,3 +6,19 @@ coverage/
 *.log
 .env*
 !.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Backend TTS
+backend/cache/
+backend/teste_xtts/venv_xtts/
+backend/teste_xtts/*.pyc
+backend/0.11.3
+
+# Áudios gerados
+backend/teste_direto.wav
+backend/teste_servidor.wav
+backend/teste_xtts/output.wav
+backend/teste_xtts/saida_*.wav
