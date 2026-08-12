@@ -39,11 +39,11 @@
 }
 
 [data-theme="light"] {
-  --t-text: #0f172a;
-  --t-text2: #1e293b;
-  --t-muted: #334155;
-  --t-faint: #475569;
-  --t-placeholder: rgba(100, 116, 139, 0.55);
+  --t-text: #000000;
+  --t-text2: #000000;
+  --t-muted: #000000;
+  --t-faint: #000000;
+  --t-placeholder: rgba(15, 23, 42, 0.45);
   --t-surface: #ffffff;
   --t-surface-strong: #f1f5f9;
   --t-panel: #f1f5f9;
